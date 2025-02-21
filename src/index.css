@@ -1,0 +1,15 @@
+@import "tailwindcss";
+/* Cho Chrome, Safari */
+::-webkit-scrollbar {
+  display: none;
+}
+/* Cho Firefox */
+* {
+  scrollbar-width: none;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
