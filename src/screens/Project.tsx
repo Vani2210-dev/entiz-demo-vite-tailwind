@@ -1,5 +1,6 @@
 import "../index.css";
-import Drawer from "./Drawer";
+import Drawer from "../moduleScreens/Drawer";
+import Footer from "../moduleScreens/Footer";
 import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell } from "recharts";
 import axios from "axios";
@@ -18,11 +19,9 @@ import {
     PiUsersThreeFill,
     PiCurrencyCircleDollarBold,
     PiPlusCircleBold,
-    PiFacebookLogo,
-    PiInstagramLogo,
-    PiMessengerLogo,
     PiArrowFatLeftFill,
     PiArrowFatRightFill,
+    PiGearFill,
 } from "react-icons/pi";
 
 const API_URL = "http://localhost:3000";
@@ -64,13 +63,13 @@ function Project() {
     }, [status, search, page]);
 
   return (
-    <div className="w-screen h-screen bg-[url(./assets/images/background.png)] bg-cover bg-center bg-no-repeat flex justify-center items-center overflow-hidden">
+    <div className="w-screen h-screen bg-[url(/assets/images/background.png)] bg-cover bg-center bg-no-repeat flex justify-center items-center overflow-hidden">
         {showDrawer && <Drawer />}
         {/* Header */}
         <div className="absolute top-0 flex flex-row w-screen h-[50px] bg-[#F5F5F5] items-center gap-1 z-10">
             <button
-            onClick={() => setShowDrawer(!showDrawer)}
-            className="content-center"
+                onClick={() => setShowDrawer(!showDrawer)}
+                className="content-center"
             >
             <PiRows className="text-[40px]"></PiRows>
             </button>
@@ -121,9 +120,16 @@ function Project() {
                         <div key={project.project_id} className="relative border border-[#BE1E2D] rounded-2xl bg-white mb-5">
                             <div className="flex flex-row w-full rounded-t-2xl p-1 bg-[#BE1E2D]">
                                 <p className="p-2 border-r-2 border-white text-white font-bold"><b className="font-light">Mã dự án</b><br/>{project.project_id}</p>
-                                <p className="p-2 text-white font-bold"><b className="font-light">Tên dự án</b><br/>{project.project_title}</p>
+                                <p className="p-2 text-white font-bold"><b className="font-light">Tên dự án</b><br />{project.project_title}</p>
+                                <button
+                                    className="p-2 flex flex-row items-center gap-2 ml-auto"
+                                    onClick={() => navigate(`/editproject/${project.project_id}`)}
+                                >
+                                    <PiGearFill className="flex-shrink-0 text-white text-2xl" />
+                                    <p className="text-white font-bold">Chỉnh sửa</p>
+                                </button>
                             </div>
-                            <div className="flex flex-row flex-wrap w-full rounded-t-2xl p-1 justify-between gap-2">
+                            <div className="flex flex-row flex-wrap w-full rounded-t-2xl p-3 justify-between gap-3">
                                 <div className="flex flex-col flex-wrap">
                                     <p className="flex flex-row">
                                         <PiUserCircleBold className="m-1 flex-shrink-0 text-[#BE1E2D]" />
@@ -216,23 +222,7 @@ function Project() {
                 </button>
             </div>
             {/*Footer*/}
-            <div className="flex flex-row flex-wrap w-full h-auto bottom-0 bg-white p-4 justify-around">
-                <div className="flex-1/3 flex flex-col flex-wrap">
-                    <p className="text-balance font-black mx-3 text-end">Địa chỉ:<p className="font-medium">Testtttttttttt ttttttttttttttttttt tttttttttttt ttttttttttttttttt ttttt</p></p>
-                    <p className="text-balance font-black mx-3 text-end">Số điện thoại:<p className="font-medium">Testttttt tttttttttttttttttttt ttttttttttttttttt tttttttttttttt ttttttt</p></p>
-                    <p className="text-balance font-black mx-3 text-end">Giờ hành chính:<p className="font-medium">Testtttttttttttt ttttttttttttttt tttttttttttttttttttt tttttttttttttttt</p></p>
-                </div>
-                <div className="relative flex-1/3 flex flex-col bg-[#FFF8EF] items-center rounded-2xl shadow-2xl">
-                    <div className="w-[90%] h-[30%] bg-[url(/assets/images/logo.png)] my-2 bg-contain bg-center bg-no-repeat z-1"></div>
-                    <div className="absolute bottom-0 w-full h-full bg-[url(/assets/images/building.png)] bg-cover bg-bottom bg-no-repeat z-0"></div>
-                </div>
-                <div className="flex-1/3 flex flex-col gap-1 items-start">
-                    <p className="text-balance font-black mx-3">Liên hệ với chúng tôi tại:</p>
-                    <button className="text-balance font-black flex flex-row hover:bg-blue-900 hover:text-white p-2"><PiFacebookLogo className="text-3xl text-blue-900 mx-3"/>Facebook</button>
-                    <button className="text-balance font-black flex flex-row hover:bg-pink-900 hover:text-white p-2"><PiInstagramLogo className="text-3xl text-pink-900 mx-3"/>Instagram</button>
-                    <button className="text-balance font-black flex flex-row hover:bg-blue-700 hover:text-white p-2"><PiMessengerLogo className="text-3xl text-blue-700 mx-3"/>Messenger</button>
-                </div>
-            </div>
+            <Footer/>
         </div>
     </div>
   );

@@ -50,7 +50,7 @@ app.post('/users', (req, res) => {
     );
 });
 
-app.post('/login', (req, res) => { 
+app.post('/login', (req, res) => {
     const { email, password } = req.body;
     db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
         if (err) {
@@ -70,14 +70,14 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/delete-user', (req, res) => { 
+app.post('/delete-user', (req, res) => {
     const { email, password } = req.body;
 
     // Tìm user theo email
     db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
         if (err) {
             return res.status(500).json({ error: 'Database error', details: err });
-        } 
+        }
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'User not found' });
@@ -203,6 +203,99 @@ app.get('/projects/filter', (req, res) => {
     });
 });
 
+app.get('/projects/:projectId', (req, res) => {
+    const { projectId } = req.params;
+
+    db.query('SELECT * FROM projects WHERE project_id = ?', [projectId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Lỗi truy vấn database' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Không tìm thấy dự án' });
+        }
+
+        const project = results[0];
+
+        // Chuyển đổi định dạng key từ snake_case sang camelCase
+        const formattedProject = {
+            projectId: project.project_id,
+            projectTitle: project.project_title,
+            projectManager: project.project_manager,
+            projectStartDate: project.project_start_date,
+            projectEndDate: project.project_end_date,
+            projectLocation: project.project_location,
+            projectInfo: project.project_info,
+            projectNumberOfEmployees: project.project_number_of_employees,
+            projectBudget: project.project_budget,
+            projectEstimate: project.project_estimate,
+            projectAcceptance: project.project_acceptance,
+            projectPayment: project.project_payment,
+            projectProgress: project.project_progress,
+            projectStatus: project.project_status,
+            createdAt: project.created_at,
+            updatedAt: project.updated_at,
+        };
+
+        res.json(formattedProject); // Trả về object với key đúng định dạng
+    });
+});
+
+app.put('/projects/:projectId', (req, res) => {
+    const { projectId } = req.params;
+    const {
+        projectTitle, projectManager, projectStartDate, projectEndDate,
+        projectLocation, projectInfo, projectNumberOfEmployees, projectBudget,
+        projectEstimate, projectAcceptance, projectPayment, projectProgress, projectStatus
+    } = req.body;
+
+    if (
+        !projectTitle || !projectManager || !projectStartDate || !projectEndDate ||
+        !projectProgress || !projectStatus
+    ) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const sql = `
+        UPDATE projects
+        SET project_title = ?, project_manager = ?, project_start_date = ?, project_end_date = ?,
+            project_location = ?, project_info = ?, project_number_of_employees = ?,
+            project_budget = ?, project_estimate = ?, project_acceptance = ?,
+            project_payment = ?, project_progress = ?, project_status = ?
+        WHERE project_id = ?
+    `;
+
+    const values = [
+        projectTitle, projectManager, projectStartDate, projectEndDate,
+        projectLocation, projectInfo, projectNumberOfEmployees, projectBudget,
+        projectEstimate, projectAcceptance, projectPayment, projectProgress, projectStatus, projectId
+    ];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error("Lỗi MySQL:", err); // In lỗi chi tiết
+            return res.status(500).json({ error: err.message });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Project not found or no changes made" });
+        }
+        res.json({ message: 'Project updated successfully' });
+    });
+});
+
+app.delete('/projects/:projectId', (req, res) => {
+    const { projectId } = req.params;
+
+    db.query('DELETE FROM projects WHERE project_id = ?', [projectId], (err, result) => {
+        if (err) {
+            console.error("Lỗi khi xóa dự án:", err);
+            return res.status(500).json({ error: 'Lỗi khi xóa dự án' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Không tìm thấy dự án' });
+        }
+        res.json({ message: 'Dự án đã được xóa thành công' });
+    });
+});
 
 app.listen(3000, () => {
     console.log('Server đang chạy tại http://localhost:3000');

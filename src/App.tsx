@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./screens/Login";
-import Dashboard from "./moduleScreens/Dashboard";
-import Project from "./moduleScreens/Project";
+import Dashboard from "./screens/Dashboard";
+import Project from "./screens/Project";
 import NewProject from "./moduleScreens/NewProject";
+import EditProject from "./moduleScreens/EditProject";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/project" element={<Project />} />
         <Route path="/newproject" element={<NewProject />} />
+        <Route path="/editproject/:project_id" element={<EditProject />} />
       </Routes>
     </Router>
   );
